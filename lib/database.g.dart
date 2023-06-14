@@ -85,7 +85,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Post` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL)');
+            'CREATE TABLE IF NOT EXISTS `Data` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL)');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -103,13 +103,12 @@ class _$PostDao extends PostDao {
   _$PostDao(
     this.database,
     this.changeListener,
-  )   : _queryAdapter = QueryAdapter(database, changeListener),
-        _postInsertionAdapter = InsertionAdapter(
+  )   : _queryAdapter = QueryAdapter(database),
+        _dataInsertionAdapter = InsertionAdapter(
             database,
-            'Post',
-            (Post item) =>
-                <String, Object?>{'id': item.id, 'title': item.title},
-            changeListener);
+            'Data',
+            (Data item) =>
+                <String, Object?>{'id': item.id, 'title': item.title});
 
   final sqflite.DatabaseExecutor database;
 
@@ -117,35 +116,33 @@ class _$PostDao extends PostDao {
 
   final QueryAdapter _queryAdapter;
 
-  final InsertionAdapter<Post> _postInsertionAdapter;
+  final InsertionAdapter<Data> _dataInsertionAdapter;
 
   @override
-  Future<List<Post>> findAllPost() async {
-    return _queryAdapter.queryList('SELECT * FROM Post',
+  Future<List<Data>> findAllPost() async {
+    return _queryAdapter.queryList('SELECT * FROM Data',
         mapper: (Map<String, Object?> row) =>
-            Post(row['id'] as int, row['title'] as String));
+            Data(id: row['id'] as int, title: row['title'] as String));
   }
 
   @override
   Stream<List<String>> findAllPostTitle() {
-    return _queryAdapter.queryListStream('SELECT title FROM Post',
+    return _queryAdapter.queryListStream('SELECT title FROM Data',
         mapper: (Map<String, Object?> row) => row.values.first as String,
-        queryableName: 'Post',
+        queryableName: 'Data',
         isView: false);
   }
 
   @override
-  Stream<Post?> findPostById(int id) {
-    return _queryAdapter.queryStream('SELECT * FROM Post WHERE id = ?1',
+  Future<Data?> findAllPostId(int id) async {
+    return _queryAdapter.query('SELECT * FROM Data WHERE id = ?1',
         mapper: (Map<String, Object?> row) =>
-            Post(row['id'] as int, row['title'] as String),
-        arguments: [id],
-        queryableName: 'Post',
-        isView: false);
+            Data(id: row['id'] as int, title: row['title'] as String),
+        arguments: [id]);
   }
 
   @override
-  Future<void> insertPost(List<Post> post) async {
-    await _postInsertionAdapter.insertList(post, OnConflictStrategy.abort);
+  Future<void> insertPost(List<Data> data) async {
+    await _dataInsertionAdapter.insertList(data, OnConflictStrategy.abort);
   }
 }

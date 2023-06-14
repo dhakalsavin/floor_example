@@ -3,15 +3,15 @@ import 'post.dart';
 
 @dao
 abstract class PostDao {
-  @Query('SELECT * FROM Post')
-  Future<List<Post>> findAllPost();
+  @Query('SELECT * FROM Data')
+  Future<List<Data>> findAllPost();
 
-  @Query('SELECT title FROM Post')
+  @Query('SELECT title FROM Data')
   Stream<List<String>> findAllPostTitle();
 
-  @Query('SELECT * FROM Post WHERE id = :id')
-  Stream<Post?> findPostById(int id);
+  @Query('SELECT * FROM Data WHERE id = :id')
+  Future<Data?> findAllPostId(int id);
 
   @insert
-  Future<void> insertPost(List<Post> post);
+  Future<void> insertPost(List<Data> data);
 }
