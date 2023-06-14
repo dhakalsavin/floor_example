@@ -3,10 +3,6 @@ import 'package:floor_example/database.dart';
 import 'package:floor_example/homepage.dart';
 import 'package:floor_example/post_dao.dart';
 import 'package:flutter/material.dart';
-import 'package:dio/dio.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
-import 'post.dart';
-import 'details_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

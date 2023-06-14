@@ -1,21 +1,34 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:floor_example/post.dart';
+import 'package:floor_example/post_controller.dart';
 import 'package:floor_example/post_dao.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import 'details_screen.dart';
 
 class MyHomePage extends StatelessWidget {
   final PostDao dao;
-  const MyHomePage({super.key, required this.dao});
+  MyHomePage({super.key, required this.dao});
+  final postController = Get.put(PostController());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('ListView'),
-      ),
+          title: Obx(() => FutureBuilder<dynamic>(
+                future: postController.checkConnectivity(),
+                builder: (context, snapshot) {
+                  print('alll${snapshot.data}');
+                  if (snapshot.hasError || snapshot.data == null) {
+                    return Text('Offline');
+                  } else {
+                    bool isConnected = snapshot.data as bool;
+                    return isConnected ? Text('Online') : Text('Offline');
+                  }
+                },
+              ))),
       body: FutureBuilder(
         future: fetchData(),
         builder: (context, snapshot) {
@@ -83,8 +96,11 @@ class MyHomePage extends StatelessWidget {
 
   Future<List<Data>> fetchData() async {
     final List<Data> posts = [];
+
     List jsonData;
-    if (await checkConnectivity()) {
+    bool check = await postController.checkConnectivity() as bool;
+    if (check) {
+      print('alllp$check');
       final dio = Dio();
       final response =
           await dio.get('https://jsonplaceholder.typicode.com/posts');
