@@ -142,6 +142,11 @@ class _$PostDao extends PostDao {
   }
 
   @override
+  Future<void> deleteTable() async {
+    await _queryAdapter.queryNoReturn('DELETE FROM Data');
+  }
+
+  @override
   Future<void> insertPost(List<Data> data) async {
     await _dataInsertionAdapter.insertList(data, OnConflictStrategy.abort);
   }

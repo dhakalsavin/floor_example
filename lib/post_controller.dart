@@ -1,6 +1,7 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:floor/floor.dart';
+import 'package:floor_example/database.dart';
 import 'package:floor_example/post.dart';
 import 'package:floor_example/post_dao.dart';
 import 'package:get/get.dart';
@@ -16,12 +17,10 @@ class PostController extends GetxController {
 
   Future<List<Data>> fetchData(PostDao dao) async {
     final List<Data> posts = [];
-
-    const int limit = 10;
-
     List jsonData;
     bool check = await checkConnectivity() as bool;
     if (check) {
+      dao.deleteTable();
       print('aaaap$check');
       final dio = Dio();
       final response =
@@ -31,10 +30,10 @@ class PostController extends GetxController {
       for (var item in jsonData) {
         // final post = Post(item['id'], item['title']);
         final data = Data.fromJson(item);
+        print('aaaaa${data.toString()}');
         posts.add(data);
       }
       dao.insertPost(posts);
-      print('aaaap1${jsonData.map((e) => Data.fromJson(e)).toList()}');
 
       return jsonData.map((e) => Data.fromJson(e)).toList();
     } else {

@@ -12,6 +12,9 @@ abstract class PostDao {
   @Query('SELECT * FROM Data WHERE id = :id')
   Future<Data?> findAllPostId(int id);
 
+  @Query('DELETE FROM Data')
+  Future<void> deleteTable();
+
   @insert
   Future<void> insertPost(List<Data> data);
 }
