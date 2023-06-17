@@ -159,12 +159,12 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> _initData() async {
-    final posts = await postController.fetchData(widget.dao);
+    final posts = await postController.fetchAndMergeData(widget.dao);
     _dataList = posts;
   }
 
   Future<void> _refreshData() async {
-    final posts = await postController.fetchData(widget.dao);
+    final posts = await postController.fetchAndMergeData(widget.dao);
     setState(() {
       _dataList = posts;
     });

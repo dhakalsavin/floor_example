@@ -52,6 +52,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                           fontSize: 20,
                         ),
                       ),
+                      Image.network(snapshot.data!.url)
                     ],
                   ),
                 );

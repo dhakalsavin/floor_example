@@ -85,7 +85,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Data` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL)');
+            'CREATE TABLE IF NOT EXISTS `Data` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `url` TEXT NOT NULL)');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -107,8 +107,11 @@ class _$PostDao extends PostDao {
         _dataInsertionAdapter = InsertionAdapter(
             database,
             'Data',
-            (Data item) =>
-                <String, Object?>{'id': item.id, 'title': item.title});
+            (Data item) => <String, Object?>{
+                  'id': item.id,
+                  'title': item.title,
+                  'url': item.url
+                });
 
   final sqflite.DatabaseExecutor database;
 
@@ -121,8 +124,10 @@ class _$PostDao extends PostDao {
   @override
   Future<List<Data>> findAllPost() async {
     return _queryAdapter.queryList('SELECT * FROM Data',
-        mapper: (Map<String, Object?> row) =>
-            Data(id: row['id'] as int, title: row['title'] as String));
+        mapper: (Map<String, Object?> row) => Data(
+            id: row['id'] as int,
+            title: row['title'] as String,
+            url: row['url'] as String));
   }
 
   @override
@@ -136,8 +141,10 @@ class _$PostDao extends PostDao {
   @override
   Future<Data?> findAllPostId(int id) async {
     return _queryAdapter.query('SELECT * FROM Data WHERE id = ?1',
-        mapper: (Map<String, Object?> row) =>
-            Data(id: row['id'] as int, title: row['title'] as String),
+        mapper: (Map<String, Object?> row) => Data(
+            id: row['id'] as int,
+            title: row['title'] as String,
+            url: row['url'] as String),
         arguments: [id]);
   }
 
